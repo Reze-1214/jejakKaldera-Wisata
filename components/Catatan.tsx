@@ -1,4 +1,7 @@
 "use client";
+import { motion } from 'framer-motion';
+
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 const logs = [
   { trail: 'BROMO · SUNRISE TREK', date: 'Dicatat Maret 2026', quote: '"Titik pandang di jam 4 pagi itu dingin sekali, tapi begitu cahaya pertama menyentuh kaldera, semua rasa kantuk hilang seketika."', name: 'Andi Pratama', city: 'Jakarta' },
@@ -20,15 +23,29 @@ export default function Catatan() {
   return (
     <section id="catatan">
       <div className="wrap">
-        <div className="sec-head">
+        <motion.div
+          className="sec-head"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.65, ease: EASE }}
+        >
           <div>
             <span className="sec-eyebrow">Buku Catatan</span>
             <h2>Yang ditulis pendaki setelah turun gunung.</h2>
           </div>
-        </div>
+        </motion.div>
+
         <div className="log-grid">
-          {logs.map(log => (
-            <div key={log.name} className="log-card">
+          {logs.map((log, i) => (
+            <motion.div
+              key={log.name}
+              className="log-card"
+              initial={{ opacity: 0, y: 36 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.6, ease: EASE, delay: i * 0.12 }}
+            >
               <div className="log-top">
                 <span className="log-meta">{log.trail}<span>{log.date}</span></span>
               </div>
@@ -45,7 +62,7 @@ export default function Catatan() {
                   </svg>
                 </button>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

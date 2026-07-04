@@ -1,5 +1,8 @@
 "use client";
 import { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
+
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 const ALL = [
   { name: 'Gunung Bromo',    loc: 'Probolinggo, Jawa Timur', elev: 2329, coord: '7.9425°S, 112.9530°E', tag: 'Kaldera', img: 'https://images.unsplash.com/photo-1698663676293-0c7f3365f67f?fm=jpg&q=80&w=900&auto=format&fit=crop', alt: 'Gunung Bromo pagi berkabut', desc: 'Kaldera aktif dengan lautan pasir seluas 10 km² dan matahari terbit paling dicari di Jawa.' },
@@ -20,6 +23,15 @@ const share = (name: string) => {
   }
 };
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: EASE, delay: i * 0.1 },
+  }),
+};
+
 export default function Destinasi() {
   const [query, setQuery] = useState('');
   const [tag, setTag] = useState('Semua');
@@ -33,16 +45,29 @@ export default function Destinasi() {
   return (
     <section id="destinasi">
       <div className="wrap">
-        <div className="sec-head">
+        {/* Header */}
+        <motion.div
+          className="sec-head"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.65, ease: EASE }}
+        >
           <div>
             <span className="sec-eyebrow">Titik Pemberhentian</span>
             <h2>Sembilan lanskap yang mengubah arah perjalanan.</h2>
           </div>
           <a href="#" className="sec-link">Lihat Semua Destinasi →</a>
-        </div>
+        </motion.div>
 
         {/* Filter bar */}
-        <div className="dest-filters">
+        <motion.div
+          className="dest-filters"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
+        >
           <input
             className="dest-search"
             type="search"
@@ -56,14 +81,22 @@ export default function Destinasi() {
               <button key={t} className={`tag-btn${tag === t ? ' active' : ''}`} onClick={() => setTag(t)}>{t}</button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {filtered.length === 0 ? (
           <p className="dest-empty">Tidak ada destinasi yang cocok.</p>
         ) : (
           <div className="dest-grid" style={{ gridTemplateColumns: `repeat(${Math.min(filtered.length, 4)}, 1fr)` }}>
-            {filtered.map(d => (
-              <div key={d.name} className="dest-card">
+            {filtered.map((d, i) => (
+              <motion.div
+                key={d.name}
+                className="dest-card"
+                custom={i}
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.15 }}
+              >
                 <div className="dest-photo">
                   <img loading="lazy" src={d.img} alt={d.alt} />
                   <span className="dest-coord">{d.coord}</span>
@@ -81,7 +114,7 @@ export default function Destinasi() {
                     Bagikan
                   </button>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         )}
